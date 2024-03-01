@@ -69,13 +69,28 @@ passengers = [
         "ручная кладь": []
     }
 ]
-index = 0
-passan = len(passengers)
+passenger_SKAN = 0
+A = 0
 ban_items = ["нож", "бензин", "граната", "пистолет"]
-print(f"Пассажиров на проверке {passan}")
+print(f"Пассажиров на проверке {len(passengers)}")
 for passenger in passengers:
     for item in passenger["ручная кладь"]:
         if item in ban_items:
             print("В ручной клади пассажира", passenger["имя"], "обнаружен запрещенный предмет", item, ". Пассажир не допущен к вылету.")
+            passenger["проверен"] = False
             break
+        else:
+            passenger["проверен"] = True
+
+    print(passenger["имя"], passenger["проверен"])
+
+    if passenger["проверен"] == True:
+        print("Пассажир", passenger["имя"], "допущен к вылету")
+        A += 1
+
+print("Допущено к вылету пассажиров:", A)
+
+
+
+
 
