@@ -92,34 +92,57 @@ def show_cards() -> None:
             print(cart['имя'], cart['масть'])
 
 
+def get_total_cards_values(player: dict) -> int:
+    total = 0
+    for cart in player['карты']:
+        total += cart['цена']
+    return total
+
+
 deck = get_dect()
 shuffle(deck)
 players = get_players()
 deal_cards(2)
-
-
-for player in players:
-    for i in range(1):
-        player['карты'].append(deck.pop(-1))
+max_cards = len(deck) // len(players)
 
 for player in players:
     while True:
-        os.system('cls') 
+        os.system('cls')
+        print(player['имя']) 
         show_cards()
+        print('Сумма очков', get_total_cards_values(player))
         player_option = input('Взять картe? y/n: ')
         if player_option == 'y':
-            player['карты'].append(deck.pop(-1))
+            if len(player['карты']) < max_cards:
+                player['карты'].append(deck.pop(-1))
+            else:
+                print('Невозможно взять еще карту')
+                input('Нажмите ENTER чтобы продолжить')
+                break
         else:
             break
+    print('Партия окончена')
 
-os.system('cls') 
-for player in players: 
-    show_cards()
-    total = 0
-    for cart in player['карты']:
-        total += cart['цена']
-    print(f'У {player["имя"]} {total} очков')
-    print('-' * 20)
+total_values = []
 
-# У каждого игрока нужно хранить сумму очков
+for player in players:
+    total_values.append(get_total_cards_values(player))
+    index = total_values.index(max(total_values))
+    player = players[index]
+
+candidates = []
+for value in  total_values:
+    if value < 21:
+        candidates.append(value)
+
+for value in  total_values:
+    if value > 21:
+        print(player['имя'], value, 'перебор')
+    elif value == 21:
+        print(player['имя'], value, 'перебор') 
+    else:
+        pass  
+       
+
+
 
