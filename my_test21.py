@@ -70,13 +70,15 @@ def get_players() -> list[dict]:
         'человек': True,
         'имя': 'Вася',
         'карты': [],
-        'счет': 10
+        'счет': 10,
+        'сумма': 0
     }
     player_2 = {
-        'человек': True,
+        'человек': False,
         'имя': 'Ася',
         'карты': [],
-        'счет': 10
+        'счет': 10,
+        'сумма': 0
     }
     return [player_1, player_2]
 
@@ -110,8 +112,16 @@ for player in players:
         os.system('cls')
         print(player['имя']) 
         show_cards()
-        print('Сумма очков', get_total_cards_values(player))
-        player_option = input('Взять картe? y/n: ')
+        player['сумма'] = get_total_cards_values(player)
+        print('Сумма очков', player['сумма'])
+        if player['человек']:
+            player_option = input('Взять картe? y/n: ')
+        else:
+            if player['сумма'] < 16:
+                player_option = 'y'
+            else:
+                player_option = 'n' 
+
         if player_option == 'y':
             if len(player['карты']) < max_cards:
                 player['карты'].append(deck.pop(-1))
@@ -120,28 +130,42 @@ for player in players:
                 input('Нажмите ENTER чтобы продолжить')
                 break
         else:
+            input('Нажмите ENTER чтобы продолжить')
             break
     print('Партия окончена')
 
-total_values = []
+players_values = []
+max_value = 0
+winner = []
 
-for player in players:
-    total_values.append(get_total_cards_values(player))
-    index = total_values.index(max(total_values))
-    player = players[index]
+def show_stat():
+    for player in players:
+        if player['сумма'] < 22:
+            print(f"{player['имя']} - {player['сумма']}")
+        else:
+            print(f"{player['имя']} - {player['сумма']} - перебор")
 
-candidates = []
-for value in  total_values:
-    if value < 21:
-        candidates.append(value)
+def show_result() -> None:
+    total_value = []
+    for player in players:
+        total_value.append(player['сумма'])
 
-for value in  total_values:
-    if value > 21:
-        print(player['имя'], value, 'перебор')
-    elif value == 21:
-        print(player['имя'], value, 'перебор') 
-    else:
-        pass  
+    if all(num > 21 for num in total_value):
+        print('Ничья')
+
+    elif all(num == total_value[0] for num in total_value):
+        print('Ничья')
+
+    for player in players:
+        if player['сумма'] == max(total_value):
+            print('Победил', winner['имя'])
+            break
+
+
+
+    
+
+  
        
 
 
